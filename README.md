@@ -25,6 +25,8 @@ Security rules that the code relies on (keep them when changing things):
 
 ## One-time setup
 
+Steps 1 to 5 were done on 2026-10-08: the IDs are in `wrangler.jsonc`, the Worker secrets are set, and the GitHub Actions token has Workers Scripts, D1 and Account Settings on the account plus Workers Routes on sstrabe.dev.
+
 1. **Heimdall app.** At https://heimdall.strabix.com/developers, create an app named Blog:
    - Redirect URIs `https://blog.sstrabe.dev/auth/callback` and `https://blog.sstrabe.dev/auth/signed-out` (Heimdall only returns there after sign-out if it is registered).
    - Scope `profile`.

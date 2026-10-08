@@ -12,8 +12,7 @@
     {
       "binding": "DB",
       "database_name": "blog",
-      // Fill in after `wrangler d1 create blog` (see README).
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "2f0bd269-4f06-405c-8ec7-3ad2391833c7",
       "migrations_dir": "migrations"
     }
   ],
@@ -35,7 +34,7 @@
     // Portal apps can't carry client roles (their registration policy allows no role mappers),
     // so AUTHOR_SUBS alone decides.
     "AUTHOR_ROLE": "",
-    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFRnA9O8L74TH-HH"
   }
   // Secrets (wrangler secret put): OIDC_CLIENT_SECRET, TURNSTILE_SECRET, NOTIFY_TOKEN
 }

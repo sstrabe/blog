@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "blog",
+  "main": "src/index.tsx",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [{ "pattern": "blog.sstrabe.dev", "custom_domain": true }],
+  "workers_dev": false,
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": false },
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blog",
+      "database_id": "2f0bd269-4f06-405c-8ec7-3ad2391833c7",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "blog-media" }],
+  "ratelimits": [
+    // Per post: at most 10 comments a minute, so one post can't flood the queue.
+    { "name": "COMMENT_LIMIT", "namespace_id": "4101", "simple": { "limit": 10, "period": 60 } }
+  ],
+  "vars": {
+    "SITE_URL": "https://blog.sstrabe.dev",
+    "SITE_NAME": "Blog",
+    "SITE_AUTHOR": "Samuel",
+    "OIDC_ISSUER": "https://sso.heimdall.strabix.com/realms/heimdall",
+    // The client ID Heimdall's developer portal shows for the app (it generates one).
+    "OIDC_CLIENT_ID": "61b234b9-1565-4b67-bbde-d86c99260493",
+    // Comma-separated Heimdall account ids (the `sub` claim) allowed to write. 53ffffc8-… is sstrabe.
+    "AUTHOR_SUBS": "53ffffc8-dc41-446d-95b0-09cd73f78b2d",
+    // Client role required in resource_access.<client>.roles of the ID token; empty to skip.
+    // Portal apps can't carry client roles (their registration policy allows no role mappers),
+    // so AUTHOR_SUBS alone decides.
+    "AUTHOR_ROLE": "",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFRnA9O8L74TH-HH"
+  }
+  // Secrets (wrangler secret put): OIDC_CLIENT_SECRET, TURNSTILE_SECRET, NOTIFY_TOKEN
+}

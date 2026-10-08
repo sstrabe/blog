@@ -24,7 +24,7 @@
   "vars": {
     "SITE_URL": "https://blog.sstrabe.dev",
     "SITE_NAME": "Blog",
-    "SITE_AUTHOR": "Samuel",
+    "SITE_AUTHOR": "Samuel Street",
     "OIDC_ISSUER": "https://sso.heimdall.strabix.com/realms/heimdall",
     // The client ID Heimdall's developer portal shows for the app (it generates one).
     "OIDC_CLIENT_ID": "61b234b9-1565-4b67-bbde-d86c99260493",

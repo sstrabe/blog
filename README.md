@@ -8,7 +8,7 @@ Plan and decisions: [Blog architecture plan](https://claude.ai/code/artifact/68d
 
 | Route | Who | Gate |
 | --- | --- | --- |
-| `GET /`, `/posts/:slug`, `/feed.xml`, `/impressum`, `/privacy` | Anyone | None |
+| `GET /`, `/posts/:slug`, `/feed.xml`, `/contact`, `/privacy` | Anyone | None |
 | `POST /api/comments` | Anyone | Honeypot, length and link checks, rate limit binding, Turnstile; stored as pending |
 | `/auth/login`, `/auth/callback`, `/auth/logout`, `/auth/signed-out` | Author | OIDC with Heimdall (code flow + PKCE) |
 | `/admin/*` | Author | `__Host-blog_session` + same Origin + CSRF token on every write |
@@ -47,7 +47,7 @@ Steps 1 to 5 were done on 2026-10-08: the IDs are in `wrangler.jsonc`, the Worke
 5. **WAF rate limiting rule** (free plan, one rule): `http.request.uri.path eq "/api/comments" and http.request.method eq "POST"`, counting per IP, 3 requests per 10 seconds, action Block.
 6. **GitHub Actions.** Add repository secrets `CLOUDFLARE_API_TOKEN` (Workers Scripts, D1, Workers Routes edit) and `CLOUDFLARE_ACCOUNT_ID`. Pushes to `main` then apply migrations and deploy.
 7. **First sign-in.** Visit `/admin` and allow the app on Heimdall's consent page. Another account would be refused and shown its account id, which is what goes into `AUTHOR_SUBS` to add a writer.
-8. **Legal pages.** Fill in the bracketed parts of `src/content.ts`.
+8. **Contact and privacy pages** are in `src/content.ts`. There is no Impressum (the author's decision); the contact address `contact@sstrabe.dev` is an alias of the author's mailbox.
 
 ## Development
 

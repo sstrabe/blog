@@ -80,7 +80,7 @@ export const PublicLayout: FC<{
       <main class="reading">{children}</main>
       <footer class="site-footer">
         <nav>
-          <a href="/impressum">Impressum</a>
+          <a href="/contact">Contact</a>
           <a href="/privacy">Privacy</a>
         </nav>
         <ThemeSwitch theme={theme} back={path} />

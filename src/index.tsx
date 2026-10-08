@@ -7,7 +7,7 @@ import { admin, notify } from "./admin";
 import { comments } from "./comments";
 import { approvedComments, postBySlug, publishedPosts } from "./db";
 import { escapeHtml } from "./markdown";
-import { IMPRESSUM, PRIVACY } from "./content";
+import { contact, privacy } from "./content";
 import { IndexPage, NotFoundPage, PostPage, TextPage } from "./views/public";
 
 const app = new Hono<AppEnv>();
@@ -43,11 +43,11 @@ app.get("/posts/:slug", async (c) => {
   return c.html(<PostPage env={c.env} theme={c.get("theme")} post={post} comments={list} form={{ sent }} />);
 });
 
-app.get("/impressum", (c) =>
-  c.html(<TextPage env={c.env} theme={c.get("theme")} title="Impressum" path="/impressum" markdown={IMPRESSUM} />),
+app.get("/contact", (c) =>
+  c.html(<TextPage env={c.env} theme={c.get("theme")} title="Contact" path="/contact" markdown={contact(c.env.SITE_AUTHOR)} />),
 );
 app.get("/privacy", (c) =>
-  c.html(<TextPage env={c.env} theme={c.get("theme")} title="Privacy" path="/privacy" markdown={PRIVACY} />),
+  c.html(<TextPage env={c.env} theme={c.get("theme")} title="Privacy" path="/privacy" markdown={privacy(c.env.SITE_AUTHOR)} />),
 );
 
 app.get("/feed.xml", async (c) => {

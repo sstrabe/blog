@@ -1,28 +1,19 @@
-// Legal pages. Fill in the bracketed parts before going live.
+// Contact and privacy pages. The name is SITE_AUTHOR; mail to the address reaches the author.
 
-export const IMPRESSUM = `# Impressum
+export const CONTACT_EMAIL = "contact@sstrabe.dev";
 
-Angaben gemäß § 5 DDG
+export const contact = (author: string) => `# Contact
 
-[Full name]
-[Street and number]
-[Postcode and city]
-Germany
-
-**Contact**
-Email: [address]
-
-**Responsible for content according to § 18 Abs. 2 MStV**
-[Full name], address as above
+This blog is written by ${author}. Write to [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL}) about anything on it, including to have a comment of yours removed.
 `;
 
-export const PRIVACY = `# Privacy
+export const privacy = (author: string) => `# Privacy
 
 This blog collects as little as it can. This page says what is processed, why, and for how long.
 
 ## Who is responsible
 
-[Full name], see the [Impressum](/impressum).
+${author}, [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL}).
 
 ## Hosting
 
@@ -34,7 +25,7 @@ Readers get no cookies, except a \`theme\` cookie if you choose light or dark mo
 
 ## Comments
 
-When you comment, the blog stores the name you enter, your comment and the time. Nothing else: no IP address, email address or browser details. Comments are published only after review. Legal basis: Art. 6 (1) (a) GDPR, your consent by submitting the form. To have a comment removed, write to the address in the Impressum.
+When you comment, the blog stores the name you enter, your comment and the time. Nothing else: no IP address, email address or browser details. Comments are published only after review. Legal basis: Art. 6 (1) (a) GDPR, your consent by submitting the form. To have a comment removed, write to [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL}).
 
 ## Spam protection with Cloudflare Turnstile
 

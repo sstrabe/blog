@@ -1,4 +1,5 @@
 import { Marked, type Tokens } from "marked";
+import { isLocalPath } from "./security";
 
 // Posts are Markdown written by the author. Raw HTML in them is shown as text,
 // links are limited to safe schemes, and images only load from this site
@@ -16,7 +17,7 @@ export function escapeHtml(s: string): string {
 export function safeHref(href: string): string | null {
   const h = href.trim();
   if (/^(https?:|mailto:)/i.test(h)) return h;
-  if (h.startsWith("/") && !h.startsWith("//")) return h;
+  if (isLocalPath(h)) return h;
   if (h.startsWith("#")) return h;
   return null;
 }

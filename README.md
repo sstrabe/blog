@@ -10,7 +10,7 @@ Plan and decisions: [Blog architecture plan](https://claude.ai/code/artifact/68d
 | --- | --- | --- |
 | `GET /`, `/posts/:slug`, `/feed.xml`, `/impressum`, `/privacy` | Anyone | None |
 | `POST /api/comments` | Anyone | Honeypot, length and link checks, rate limit binding, Turnstile; stored as pending |
-| `/auth/login`, `/auth/callback`, `/auth/logout` | Author | OIDC with Heimdall (code flow + PKCE) |
+| `/auth/login`, `/auth/callback`, `/auth/logout`, `/auth/signed-out` | Author | OIDC with Heimdall (code flow + PKCE) |
 | `/admin/*` | Author | `__Host-blog_session` + same Origin + CSRF token on every write |
 | `GET /api/admin/pending-count` | VPS notifier | `Authorization: Bearer $NOTIFY_TOKEN` |
 | `/media/:key` | Anyone | Images from R2, type sniffed at upload, served with a sandbox CSP |
@@ -25,11 +25,11 @@ Security rules that the code relies on (keep them when changing things):
 
 ## One-time setup
 
-1. **Heimdall app.** In Heimdall's developer portal, register an external app:
-   - Client ID `blog`, confidential, standard flow only, PKCE S256.
-   - Redirect URI `https://blog.sstrabe.dev/auth/callback`, post-logout redirect `https://blog.sstrabe.dev/`.
-   - A client role `author`, granted to you, with the client-roles mapper set to add roles to the ID token.
-   - Put the realm's issuer URL into `OIDC_ISSUER` in `wrangler.jsonc` (replace `REALM`).
+1. **Heimdall app.** At https://heimdall.strabix.com/developers, create an app named Blog:
+   - Redirect URIs `https://blog.sstrabe.dev/auth/callback` and `https://blog.sstrabe.dev/auth/signed-out` (Heimdall only returns there after sign-out if it is registered).
+   - Scope `profile`.
+   - Put the client ID the portal shows into `OIDC_CLIENT_ID` in `wrangler.jsonc`; the secret goes in with step 4.
+   - The portal makes it confidential with PKCE S256. It can't add client roles, so `AUTHOR_SUBS` decides who can write; it already holds your account id.
 2. **Cloudflare resources.**
    ```sh
    npx wrangler d1 create blog          # put the database_id into wrangler.jsonc
@@ -44,7 +44,7 @@ Security rules that the code relies on (keep them when changing things):
    ```
 5. **WAF rate limiting rule** (free plan, one rule): `http.request.uri.path eq "/api/comments" and http.request.method eq "POST"`, counting per IP, 3 requests per 10 seconds, action Block.
 6. **GitHub Actions.** Add repository secrets `CLOUDFLARE_API_TOKEN` (Workers Scripts, D1, Workers Routes edit) and `CLOUDFLARE_ACCOUNT_ID`. Pushes to `main` then apply migrations and deploy.
-7. **First sign-in.** Visit `/admin`. Heimdall signs you in, the blog refuses (no author yet) and shows your account id. Put it into `AUTHOR_SUBS` and deploy again.
+7. **First sign-in.** Visit `/admin` and allow the app on Heimdall's consent page. Another account would be refused and shown its account id, which is what goes into `AUTHOR_SUBS` to add a writer.
 8. **Legal pages.** Fill in the bracketed parts of `src/content.ts`.
 
 ## Development

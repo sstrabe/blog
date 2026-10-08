@@ -26,13 +26,15 @@
     "SITE_URL": "https://blog.sstrabe.dev",
     "SITE_NAME": "Blog",
     "SITE_AUTHOR": "Samuel",
-    // Heimdall realm issuer, e.g. https://heimdall.strabix.com/realms/<realm>
-    "OIDC_ISSUER": "https://heimdall.strabix.com/realms/REALM",
-    "OIDC_CLIENT_ID": "blog",
-    // Comma-separated Heimdall account ids (the `sub` claim) allowed to write.
-    "AUTHOR_SUBS": "",
+    "OIDC_ISSUER": "https://sso.heimdall.strabix.com/realms/heimdall",
+    // The client ID Heimdall's developer portal shows for the app (it generates one).
+    "OIDC_CLIENT_ID": "",
+    // Comma-separated Heimdall account ids (the `sub` claim) allowed to write. 53ffffc8-… is sstrabe.
+    "AUTHOR_SUBS": "53ffffc8-dc41-446d-95b0-09cd73f78b2d",
     // Client role required in resource_access.<client>.roles of the ID token; empty to skip.
-    "AUTHOR_ROLE": "author",
+    // Portal apps can't carry client roles (their registration policy allows no role mappers),
+    // so AUTHOR_SUBS alone decides.
+    "AUTHOR_ROLE": "",
     "TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
   }
   // Secrets (wrangler secret put): OIDC_CLIENT_SECRET, TURNSTILE_SECRET, NOTIFY_TOKEN

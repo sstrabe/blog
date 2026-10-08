@@ -56,6 +56,11 @@ export async function safeEqual(a: string, b: string): Promise<boolean> {
   return diff === 0 && a.length > 0;
 }
 
+// A path on this site. Browsers read "//host" and "/\host" as another host.
+export function isLocalPath(path: string): boolean {
+  return path.startsWith("/") && !path.startsWith("//") && !path.startsWith("/\\");
+}
+
 // A neighbour on *.sstrabe.dev counts as same-site, so SameSite cookies don't stop it.
 // Admin writes need both a same-origin Origin header and the session's CSRF token.
 export function sameOrigin(request: Request): boolean {

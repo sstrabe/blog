@@ -32,6 +32,7 @@ describe("markdown", () => {
 
   it("allows only safe link targets", () => {
     expect(safeHref("//evil.example")).toBeNull();
+    expect(safeHref("/\\evil.example")).toBeNull();
     expect(safeHref("data:text/html,x")).toBeNull();
     expect(safeHref("/posts/a")).toBe("/posts/a");
     expect(safeHref("mailto:a@b.c")).toBe("mailto:a@b.c");

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import type { AppEnv, Theme } from "./env";
-import { securityHeaders } from "./security";
+import { isLocalPath, securityHeaders } from "./security";
 import { auth, loadSession, requireAuthor } from "./auth";
 import { admin, notify } from "./admin";
 import { comments } from "./comments";
@@ -98,7 +98,7 @@ app.post("/theme", async (c) => {
     setCookie(c, "theme", "", { path: "/", secure: true, sameSite: "Lax", maxAge: 0 });
   }
   const back = String(form.back ?? "/");
-  return c.redirect(back.startsWith("/") && !back.startsWith("//") ? back : "/", 303);
+  return c.redirect(isLocalPath(back) ? back : "/", 303);
 });
 
 app.notFound((c) => c.html(<NotFoundPage env={c.env} theme={c.get("theme") ?? "system"} path={c.req.path} />, 404));

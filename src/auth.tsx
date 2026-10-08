@@ -92,7 +92,8 @@ auth.get("/login", async (c) => {
     response_type: "code",
     client_id: c.env.OIDC_CLIENT_ID,
     redirect_uri: redirectUri(c.env),
-    scope: "openid email profile",
+    // The name is all the blog shows; the portal app needs the profile scope ticked.
+    scope: "openid profile",
     state: flow.state,
     nonce: flow.nonce,
     code_challenge: challenge,
@@ -150,6 +151,7 @@ auth.get("/callback", async (c) => {
     ({ payload: claims } = await jwtVerify(tokens.id_token, jwks(d.jwks_uri), {
       issuer: d.issuer,
       audience: c.env.OIDC_CLIENT_ID,
+      algorithms: ["RS256"],
     }));
   } catch {
     return fail("The sign-in couldn't be verified. Please try again.");
@@ -161,7 +163,7 @@ auth.get("/callback", async (c) => {
 
   const sessionId = randomToken();
   const expires = new Date(Date.now() + SESSION_HOURS * 3600_000).toISOString();
-  const name = String(claims.name ?? claims.preferred_username ?? claims.email ?? "");
+  const name = String(claims.name ?? claims.preferred_username ?? "");
   await c.env.DB.batch([
     c.env.DB.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(now()),
     c.env.DB.prepare("INSERT INTO sessions (id_hash, sub, name, csrf, expires_at) VALUES (?, ?, ?, ?, ?)").bind(
@@ -212,10 +214,13 @@ auth.post("/logout", async (c) => {
   const url = new URL(d.end_session_endpoint);
   url.search = new URLSearchParams({
     client_id: c.env.OIDC_CLIENT_ID,
-    post_logout_redirect_uri: `${c.env.SITE_URL.replace(/\/$/, "")}/`,
+    // Heimdall only returns to one of the app's registered redirect URIs.
+    post_logout_redirect_uri: `${c.env.SITE_URL.replace(/\/$/, "")}/auth/signed-out`,
   }).toString();
   return c.redirect(url.toString(), 303);
 });
+
+auth.get("/signed-out", (c) => c.redirect("/", 303));
 
 export const loadSession: MiddlewareHandler<AppEnv> = async (c, next) => {
   const id = getCookie(c, SESSION_COOKIE);

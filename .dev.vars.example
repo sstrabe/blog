@@ -1,0 +1,5 @@
+# Copy to .dev.vars for `npm run dev`. Never commit .dev.vars.
+OIDC_CLIENT_SECRET=
+# Turnstile's always-pass test secret
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+NOTIFY_TOKEN=local-dev-token
